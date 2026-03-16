@@ -2,35 +2,33 @@ from src.dados.analisar_ocorrencias import AnalisarDados
 
 analisador = AnalisarDados()
 
-# coluna_filtro = "LOGRADOURO"
-# filtros = {
-#     "LOGRADOURO": "Avenida Dona Belmira MarIN",
-# }
-
-# Teste a partir de
-# coluna_filtro = "DIA_SEMANA"
-# filtros = {
-#     "MUNICIP_CIRCUNSCRICAO": "S.PAULO",
-#     "HORA_INICIO": 18
-# }
-
-# Teste usando datas completas
-# coluna_filtro = "DESCR_TIPOLOCAL"
-# filtros = {
-#     "DATA_INICIO": "2025-01-01",
-#     "DATA_FIM": "2025-01-15",
-#     "MUNICIP_CIRCUNSCRICAO": "S.PAULO"
-# }
-
-# Teste combinando mes e dias
-coluna_filtro = "HORA_OCORRENCIA_BO"
-filtros = {
-    "MES_ESTATISTICA": 2,
-    "DIA_INICIO": 10,
-    "DIA_FIM": 20
+# Parâmetros para frequencia_temporal
+coluna_temporal = "DIA_SEMANA"
+filtros_temporal = {
+    "ANO_BO": 2025,
+    "CIDADE": "S.PAULO"
 }
 
-resposta = analisador.frequencia_temporal(coluna_filtro, filtros)
+# Parâmetros para mapeamento_geografico
+coluna_geografica = "BAIRRO"
+filtros_geograficos = {
+    "CIDADE": "S.PAULO",
+    "MES_ESTATISTICA": 3
+}
 
-print(resposta)
+# Parâmetros para impacto_financeiro
+coluna_dinheiro = "VALOR_DA_CARGA"
+filtros_financeiros = {
+    "CIDADE": "S.PAULO",
+    "ANO_BO": 2025
+}
+operacao_matematica = "soma"
+
+# resposta1 = analisador.frequencia_temporal(coluna_temporal, filtros_temporal)
+# resposta2 = analisador.frequencia_geografica(coluna_geografica, filtros_geograficos, 5, False)
+resposta3 = analisador.impacto_financeiro(coluna_dinheiro, filtros_financeiros, operacao_matematica)
+
+# print(resposta1)
+# print(resposta2)
+print(resposta3)
 
