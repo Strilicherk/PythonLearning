@@ -1,11 +1,14 @@
 import pandas as pd
 import numpy as np
 
+
 class AnalisarDados:
     def __init__(self):
         self.dados = pd.read_excel("data/v3.0 - SP CARGA FILTRADA.xlsx", sheet_name="SPCARGA")
         self.dados["SEMESTRE"] = np.where(self.dados["MES_ESTATISTICA"] < 7, 1, 2)
-        self.dados["DATA_HORA_OCORRENCIA_BO"] = pd.to_datetime(self.dados["DATA_OCORRENCIA_BO"].astype(str) + " " + self.dados["HORA_OCORRENCIA_BO"].astype(str), errors='coerce')
+        self.dados["DATA_HORA_OCORRENCIA_BO"] = pd.to_datetime(
+            self.dados["DATA_OCORRENCIA_BO"].astype(str) + " " + self.dados["HORA_OCORRENCIA_BO"].astype(str),
+            errors='coerce')
         self.dicionario_colunas = {
             "HORA_INICIO": {"COLUNA": "DATA_HORA_OCORRENCIA_BO",
                             "FUNCAO": lambda x: x.dt.hour},
@@ -55,6 +58,12 @@ class AnalisarDados:
         return self.dados[mascara_final][nome_coluna]
 
     def frequencia_temporal(self, nome_coluna: str, filtro: dict):
+        """
+            Utilize esta ferramenta estritamente para buscar a frequência das ocorrências, no caso quando elas ocorreram ou quando mais ocorrem.
+            Não utilize esta ferramenta para buscar dados de onde ocorreram ou de quanto de prejuízo causaram.
+            O parâmetro 'nome_coluna' deve conter a coluna que tem a informação a ser devolvida.
+            O parâmetro 'filtro' contém um mapa de filtros, relacionando o nome do parâmetro a tabela.
+        """
         result = self._aplicar_filtros(nome_coluna, filtro)
         if isinstance(result, str):
             return result
@@ -62,6 +71,16 @@ class AnalisarDados:
             return result.value_counts()
 
     def frequencia_geografica(self, nome_coluna: str, filtro: dict, limite: int, crescente: bool):
+        """
+            Utilize esta ferramenta estritamente para buscar onde ocorreram ou ocorrem as ocorrências.
+            Não utilize esta ferramenta para buscar dados de quando ocorrem ou de quanto de prejuízo causaram.
+            O parâmetro 'nome_coluna' deve conter a coluna que tem a informação a ser devolvida.
+            O parâmetro 'nome_coluna' deve ser o nome exato da coluna geográfica desejada (ex: 'BAIRRO', 'CIDADE', 'MUNICIPIO')
+            O parâmetro 'filtro' contém um mapa de filtros, relacionando o nome do parâmetro a tabela.
+            O parâmetro 'limite' define o limite de registros que devem ser retornados, serve para caso o utilizador solicite um 'top tier'.
+            O parâmetro 'crescente' define se as informações devem ser organizadas em ordem crescente ou decrescente.
+            Use crescente=True se o usuário pedir os locais mais seguros/com menos ocorrências. Use crescente=False se pedir os mais perigosos/com mais ocorrências
+        """
         result = self._aplicar_filtros(nome_coluna, filtro)
         if isinstance(result, str):
             return result
@@ -69,6 +88,13 @@ class AnalisarDados:
         return result.value_counts(ascending=crescente).head(limite)
 
     def impacto_financeiro(self, nome_coluna: str, filtro: dict, operacao: str):
+        """
+            Utilize esta ferramenta estritamente para buscar o impacto financeiro das ocorrências.
+            Não utilize esta ferramenta para buscar dados de quando ocorrem ou de onde ocorrem.
+            O parâmetro 'nome_coluna' deve conter a coluna que tem a informação a ser devolvida.
+            O parâmetro 'filtro' contém um mapa de filtros, relacionando o nome do parâmetro a tabela.
+            O parâmetro 'operacao' contém a operação matemática a ser realizada, podendo ser "soma", "media" ou "mediana".
+        """
         result = self._aplicar_filtros(nome_coluna, filtro)
         if isinstance(result, str):
             return result
@@ -104,10 +130,3 @@ class AnalisarDados:
             return valores_numericos.median()
         else:
             return "Operação matemática não reconhecida. Utilize 'soma' ou 'media'."
-
-
-
-
-
-
-
